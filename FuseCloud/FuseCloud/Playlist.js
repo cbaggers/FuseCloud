@@ -1,5 +1,5 @@
 var Observable = require("FuseJS/Observable");
-var PlaylistPlayer = require("PlaylistPlayer");
+var StreamingPlayer = require("FuseJS/StreamingPlayer");
 var Config = require("FuseCloudConfig");
 var PLAYING_STATE = require("FuseCloud/PlayingState");
 var Timer = require("FuseJS/Timer");
@@ -7,7 +7,7 @@ var Model = require("FuseCloud/Model");
 
 
 var playingState = Observable(PLAYING_STATE.STOPPED);
-PlaylistPlayer.statusChanged = function(status){
+StreamingPlayer.statusChanged = function(status){
 	playingState.value = PLAYING_STATE.parse(status);
 };
 
@@ -15,7 +15,7 @@ var currentTrackId = Observable();
 var currentTrack = currentTrackId.map(Model.GetTrackInfo).inner();
 
 currentTrack.onValueChanged(function(val){
-	
+
 });
 
 var currentPlaylist = [];
@@ -51,8 +51,8 @@ function createNewTimer(){
 	deleteTimer();
 	timer = Timer.create(function(){
 		if (!isInteracting) {
-			setDuration(PlaylistPlayer.duration);
-			setProgress(PlaylistPlayer.progress);
+			setDuration(StreamingPlayer.duration);
+			setProgress(StreamingPlayer.progress);
 		}
 	}, 100, true);
 }
@@ -73,8 +73,8 @@ function setCurrentTrackToUnoTrackId(unoTrackId){
 		currentTrackId.value = jsTrack[0].id;
 }
 
-PlaylistPlayer.currentTrackChanged = function(){
-	var newCurrentTrack = PlaylistPlayer.currentTrack;
+StreamingPlayer.currentTrackChanged = function(){
+	var newCurrentTrack = StreamingPlayer.currentTrack;
 	if (newCurrentTrack) {
 		currentTrackId.value = newCurrentTrack.id;
 		setCurrentTrackToUnoTrackId(newCurrentTrack.id);
@@ -82,11 +82,11 @@ PlaylistPlayer.currentTrackChanged = function(){
 };
 
 function playNext(){
-	PlaylistPlayer.next();
+	StreamingPlayer.next();
 }
 
 function playPrevious(){
-	PlaylistPlayer.previous();
+	StreamingPlayer.previous();
 }
 
 function trackToUnoTrack(track){
@@ -107,7 +107,7 @@ function setCurrentPlaylist(pl){
 		currentPlaylist.push(x);
 		trackList.push(trackToUnoTrack(x));
 	});
-	PlaylistPlayer.setPlaylist(trackList);
+	StreamingPlayer.setPlaylist(trackList);
 }
 
 var isPlaying = playingState.map(function(x){ return x === PLAYING_STATE.PLAYING; });
@@ -118,39 +118,39 @@ var isLoading = playingState.map(function(x){ return x === PLAYING_STATE.LOADING
 var hasPrevious = Observable(false);
 var hasNext = Observable(false);
 
-PlaylistPlayer.hasNextChanged = function(n){
+StreamingPlayer.hasNextChanged = function(n){
 	hasNext.value = n;
 };
 
-PlaylistPlayer.hasPreviousChanged = function(p){
+StreamingPlayer.hasPreviousChanged = function(p){
 	hasPrevious.value = p;
 };
 
 function seek(progress){
-	PlaylistPlayer.seek(progress);
+	StreamingPlayer.seek(progress);
 }
 
 function resume(){
-	PlaylistPlayer.resume();
+	StreamingPlayer.resume();
 }
 
 function pause(){
-	PlaylistPlayer.pause();
+	StreamingPlayer.pause();
 }
 
 function play(t){
 	if (t){
-		PlaylistPlayer.play(t);
+		StreamingPlayer.play(t);
 		isLoading.value = true; // so we don't have to wait for the round trip
 	} else {
 		if (currentTrack.value) {
-			PlaylistPlayer.play(trackToUnoTrack(currentTrack.value));
+			StreamingPlayer.play(trackToUnoTrack(currentTrack.value));
 		}
 	}
 }
 
 function stop(){
-	PlaylistPlayer.stop();
+	StreamingPlayer.stop();
 }
 
 function setCurrentTrackAndPlayIfDifferent(track){
@@ -186,7 +186,7 @@ module.exports = {
 	isPaused : isPaused,
 	isStopped : isStopped,
 	isLoading : isLoading,
-	
+
 	duration : duration,
 	progress : progress,
 
