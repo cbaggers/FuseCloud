@@ -89,15 +89,26 @@ function playPrevious(){
 	StreamingPlayer.previous();
 }
 
-function trackToUnoTrack(track){
-	return {
+function trackToUnoTrack(track) {
+	console.log("trackToUnoTrack: >" + JSON.stringify(track) + "<");
+	var url = track.stream_url;
+	var artworkUrl = track.artwork_500;
+
+	if (!track.is_local) {
+		url += ("?client_id=" + Config.clientId);
+		artworkUrl += ("?client_id=" + Config.clientId);
+	}
+
+	var unoTrack =  {
 		id : track.id,
 		name : track.title,
 		artist : track.artist,
-		url : track.stream_url + "?client_id=" + Config.clientId,
-		artworkUrl : track.artwork_500 + "?client_id=" + Config.clientId,
+		url : track.stream_url,
+		artworkUrl : artworkUrl,
 		duration : track.duration / 1000.0
 	};
+	console.log("unoTrack: >" + JSON.stringify(unoTrack) + "<");
+	return unoTrack;
 }
 
 function setCurrentPlaylist(pl){

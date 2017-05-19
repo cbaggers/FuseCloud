@@ -2,6 +2,7 @@ var baseUrl = "http://api.soundcloud.com/";
 var Auth = require("FuseCloud/Auth");
 var FuseCloudModel = require("FuseCloud/FuseCloudModel");
 var Config = require("FuseCloudConfig");
+var MediaQuery = require("FuseJS/MediaQuery");
 
 function FuseCloud(api, args, m, body, access_token, baseUrl_) {
 	var b = baseUrl;
@@ -56,7 +57,7 @@ function FuseCloud(api, args, m, body, access_token, baseUrl_) {
 		return null;
 	}).catch(function(msg) {
 		console.log("Failed to fetch: " + url + ", msg: " + msg);
-	}); 
+	});
 }
 
 function FuseCloudGet(api,args,token) {
@@ -106,8 +107,13 @@ function fetchTracksForSearchTerm(term) {
 			});
 		});
 	} else {
-		return FuseCloudGet("tracks", { q: term }).then(function(result) {
-			return FuseCloudModel.CreateTracks(result);
+		console.log("local. term=>" + term + "<");
+		var query = (term === " " ? {} : { "artist": term });
+		var pendingTracks = MediaQuery.tracks(query);
+		console.log("query: "+ JSON.stringify(query));
+		console.log(pendingTracks);
+		return pendingTracks.then(function(results) {
+			return FuseCloudModel.CreateLocalTracks(results);
 		});
 	}
 }
@@ -205,7 +211,7 @@ function unlikeTrack(trackId) {
 
 function fetchFavorites() {
 	return Auth.getAccessToken("fetchFavorites")
-		.then(function(token) { 
+		.then(function(token) {
 			return FuseCloudGet("me/favorites", {}, token)
 				.then(function(favorites) {
 					return FuseCloudModel.CreateTracks(favorites);

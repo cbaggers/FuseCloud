@@ -13,6 +13,7 @@ function CreateTrack(t) {
 
 	return {
 		id : t.id,
+		is_local: false,
 		title : t.title,
 		duration : t.duration,
 		durationString : durationString, //this should be in the viewmodel
@@ -44,6 +45,35 @@ function CreateTracks(trackList) {
 		}
 	});
 	return ret;
+}
+
+function CreateLocalTrack(track, index) {
+		var d = Moment(track["duration"]);
+		var durationString = formatDuration(d);
+		return {
+			id : index,
+			title : track["title"],
+			is_local: true,
+			duration: track["duration"],
+			durationString : ""+ track["duration"], //this should be in the viewmodel
+			artist: track["artist"],
+			artworkUrl: "https://everyweeks.com/pZ2j56doGB6c0ykra8lXMj7nuNTDsT79-logo.png",
+			artwork_500 : "https://everyweeks.com/pZ2j56doGB6c0ykra8lXMj7nuNTDsT79-logo.png",
+			playback_count : 0,
+			stream_url: track["path"],
+			genre: "foo",
+			description: "Some description",
+			avatar_url : "https://everyweeks.com/pZ2j56doGB6c0ykra8lXMj7nuNTDsT79-logo.png",
+			user : "local",
+			user_favorite : false,
+			commentable : false
+		};
+	}
+
+function CreateLocalTracks(trackList) {
+	var tracks = trackList.map(CreateLocalTrack);
+	console.log("tracks: "+ JSON.stringify(tracks));
+	return tracks;
 }
 
 function CreateUser(u) {
@@ -113,6 +143,8 @@ function CreateActivityCollection(ac) {
 module.exports = {
 	CreateTrack : CreateTrack,
 	CreateTracks : CreateTracks,
+	CreateLocalTrack : CreateLocalTrack,
+	CreateLocalTracks : CreateLocalTracks,
 	CreateUser : CreateUser,
 	CreateComment : CreateComment,
 	CreateActivityCollection : CreateActivityCollection,

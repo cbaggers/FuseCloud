@@ -20,7 +20,7 @@ var favoritedCurrentTrack = Playlist.currentTrack.map(function(track) {
 });
 
 var favoritedCurrentTrackIcon = favoritedCurrentTrack.map(function(x) {
-	return x ? 0 : 1;
+	return 0;//x ? 0 : 1;
 });
 
 var allComments = Playlist.currentTrackId.map(Model.GetTrackComments).inner();

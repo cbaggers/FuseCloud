@@ -1,21 +1,21 @@
 <Page ux:Class="FuseCloud.TrackDetailsPage" Color="#000" Transition="None" ClipToBounds="true"
 	Freeze="WhileNavigating">
-	
+
 	<StatusBarBackground Row="0"/>
-	
+
 	<EnteringAnimation>
 		<Move X="1" RelativeTo="Size" Duration="0.2" />
 	</EnteringAnimation>
 	<ExitingAnimation>
 		<Change this.Visibility="Hidden" Delay="0.1" />
 	</ExitingAnimation>
-	
+
 	<Router ux:Dependency="router"/>
 	<JavaScript File="TrackDetails.js" />
 	<GridLayout Rows="auto,2*,7*,2.5*" Columns="1*"/>
 
 	<Panel Row="3">
-		<WhileActive>		
+		<WhileActive>
 			<FuseCloud.Player ux:Name="player" router="router" Margin="20,5">
 				<AddingAnimation>
 					<Change player.Opacity="0" Duration="0.3" DelayBack="0.35" />
@@ -45,7 +45,7 @@
 			<Panel>
 				<WhileTrue Value="{isLoggedIn}">
 					<Panel Clicked="{likeUnlike}" HitTestMode="LocalBounds" Margin="0,-15,-15,0">
-						<FuseCloud.LikeIcon Opacity="{favoritedCurrentTrackIcon}"/>
+						<FuseCloud.LikeIcon Opacity="0"/>
 						<FuseCloud.LikeIconPurple />
 					</Panel>
 				</WhileTrue>
@@ -64,7 +64,7 @@
 			<Swiped Source="rightSwipe">
 				<Callback Handler="{previous}" />
 			</Swiped>
-			
+
 			<Shadow Size="2" Distance="2" Color="#0004"/>
 			<Image ux:Class="FuseCloud.AlbumArt" Url="{currentTrack.artwork_500}" StretchMode="UniformToFill">
 				<WhileLoading>
